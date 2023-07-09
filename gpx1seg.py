@@ -9,7 +9,6 @@ Sample call (- for stdin/stdout works, too):
 python .\gpx1seg.py in.gpx > out.gpx
 """
 
-import re
 import argparse
 from lxml import etree # https://lxml.de/tutorial.html
 
@@ -21,9 +20,8 @@ if __name__ == '__main__':
 
     gpx = etree.parse(args.infile)
     root = gpx.getroot()
-    namespace = re.match(r'{(.*)}.*', root.tag).group(1) # http://www.topografix.com/GPX/1/1
     trkseg0 = None
-    for trkseg in root.iter("{%s}trkseg" % namespace):
+    for trkseg in root.iter("{*}trkseg"):
         if trkseg0 is None:
             trkseg0 = trkseg
         else:
