@@ -12,7 +12,6 @@ Sample call:
 python .\gpxscat.py --name "My Tour" template.gpx segment1.gpx segment2.gpx > concatenated.gpx 
 """
 
-import re
 import sys
 import argparse
 from lxml import etree # https://lxml.de/tutorial.html
@@ -20,9 +19,8 @@ from lxml import etree # https://lxml.de/tutorial.html
 def add(trk0: etree.Element, segment_file: str):
     segment_xml = etree.parse(segment_file)
     segment_root = segment_xml.getroot()
-    namespace = re.match(r'{(.*)}.*', segment_root.tag).group(1) # http://www.topografix.com/GPX/1/1
 
-    for segment in segment_root.iter("{%s}trkseg" % namespace):
+    for segment in segment_root.iter("{*}trkseg"):
         out = etree.SubElement(trk0, "trkseg")
         for trkpt in segment:
             pt = etree.SubElement(trk0, "trkpt", lat=trkpt.get("lat"), lon=trkpt.get("lon"))
